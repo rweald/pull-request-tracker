@@ -37,7 +37,6 @@ module GithubIntegration
     end
     
     def run_test_suite
-      self.init
       FileUtils.cd(FILEPATH)
       result = `rspec --format d spec/`
       saved_result = []
