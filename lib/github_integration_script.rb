@@ -35,9 +35,13 @@ module GithubIntegration
   GITHUB = "http://github.com/api/v2/json/pulls"
   FILEPATH = File.expand_path("~/Computer Programs/cogs120/snack-picker-test")
   
-  def GithubIntegration.get_pull_requests
-    @user ||= "rweald"
-    @repository ||= "snack-picker"
+  def self.init
+    @user = "rweald"
+    @repository = "snack-picker"
+  end
+  
+  def self.get_pull_requests
+    self.init
     route = "#{GITHUB}/#{@user}/#{@repository}/closed"
     response = RestClient.get route
     pull_requests = JSON.parse(response)
