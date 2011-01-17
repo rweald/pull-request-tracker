@@ -1,0 +1,1 @@
+require "github_integration_script.rb"
