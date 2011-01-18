@@ -1,5 +1,5 @@
 require "spec_helper"
-require "ruby-debug"
+
 describe GithubIntegration do
   before(:each) do
     @gh = GithubIntegration::APIRequest.new :user => "icl", :repository => "cove"
