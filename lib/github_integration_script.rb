@@ -58,17 +58,17 @@ module GithubIntegration
       end
      return saved_result
     end
-    protected :parse_rspec_result
+    # protected :parse_rspec_result
     
     def parse_cucumber_result(result)
-      res = result.match(/([0-9]+) scenarios \(.*,? ([0-9]+) passed\)/).captures
+      res = result.match(/([0-9]+) scenarios \(.*,? ([0-9]+) passed\)/)
       if res
-        return res
+        return res.captures
       else
         return result.match(/([0-9]+) scenarios \(([0-9]+) passed\)/).captures
       end
     end
-    protected :parse_cucumber_result
+    # protected :parse_cucumber_result
     
     def checkout_pull_request(args)
       FileUtils.cd(FILEPATH)

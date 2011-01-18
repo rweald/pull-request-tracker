@@ -12,7 +12,6 @@ g = GithubIntegration::APIRequest.new :user => "icl", :repository => "cove"
 
 # get the requests 
 g.store_new_pull_requests(g.get_pull_requests)
-debugger
 
 while (g.redis.llen("test_queue") > 0)
   req = JSON.parse(g.redis.lpop("test_queue"))
