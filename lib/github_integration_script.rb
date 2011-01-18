@@ -8,15 +8,17 @@ require "fileutils"
 
 module GithubIntegration
   GITHUB = "http://github.com/api/v2/json/pulls"
-  FILEPATH = File.expand_path("~/Computer Programs/cogs120/cove-test")
+  # FILEPATH = File.expand_path("~/Computer Programs/cogs120/cove-test")
   
   class APIRequest
     attr_accessor :redis
     attr_accessor :user
     attr_accessor :repository
+    attr_reader :filepath
     def initialize(args)
       @user = args[:user]
       @repository = args[:repository]
+      @filepath = args[:filepath]
       @redis = Redis.new
     end
     
@@ -38,7 +40,7 @@ module GithubIntegration
     end
     
     def run_test_suite(title)
-      FileUtils.cd(FILEPATH)
+      FileUtils.cd(@filepath)
       `bundle install`
       `rake db:migrate`
       result = `rspec --format d spec/`
@@ -73,13 +75,30 @@ module GithubIntegration
     # protected :parse_cucumber_result
     
     def checkout_pull_request(args)
-      FileUtils.cd(FILEPATH)
+      FileUtils.cd(@filepath)
       uname = args[:user_name]
       bname = args[:branch_name]
       cmd_string = "git checkout -b #{uname}-#{bname} master"
       system(cmd_string)
       cmd_string = "git pull git://github.com/#{uname}/#{@repository}.git #{args[:branch_name]}"
       system(cmd_string)
+    end
+  end
+  
+  class Runner
+    def self.start(filepath)
+      g = GithubIntegration::APIRequest.new :user => "icl", :repository => "cove",:filepath => ARGV[0] 
+
+      # get the requests 
+      g.store_new_pull_requests(g.get_pull_requests)
+
+      while (g.redis.llen("test_queue") > 0)
+        req = JSON.parse(g.redis.lpop("test_queue"))
+        req = req["head"]
+        g.checkout_pull_request :branch_name => req["ref"], :user_name => req["repository"]["owner"], :url => req["repository"]["url"]
+        g.run_test_suite req["label"]
+      end
+      puts "This is proof that I have been run"
     end
   end
 end

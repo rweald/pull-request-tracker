@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe GithubIntegration do
   before(:each) do
-    @gh = GithubIntegration::APIRequest.new :user => "icl", :repository => "cove"
+    @gh = GithubIntegration::APIRequest.new :user => "icl", :repository => "cove", :filepath =>  File.expand_path("~/Computer Programs/cogs120/cove-test") 
     @result = @gh.get_pull_requests()
   end
   
