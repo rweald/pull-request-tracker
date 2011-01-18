@@ -51,13 +51,14 @@ module GithubIntegration
     end
     
     def parse_rspec_result(result)
-      saved_result = []
-      result = result.split("seconds")[1]
-      result = result.split(",")
-      result.each do |entry|
-        saved_result << entry.strip.split(" ")[0]
-      end
-     return saved_result
+      # saved_result = []
+      # result = result.split("seconds")[1]
+      # result = result.split(",")
+      # result.each do |entry|
+      #   saved_result << entry.strip.split(" ")[0]
+      # end
+     # return saved_result
+     return result.match(/([0-9]+) examples, ([0-9]+) failures/).captures
     end
     # protected :parse_rspec_result
     
