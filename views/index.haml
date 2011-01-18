@@ -1,0 +1,15 @@
+%div.header
+  Welcome to the Cove Integration Analysis
+  %p 
+-@pull_requests.each do |req|
+  .result_container
+    .pull_title
+      =req[:label]
+    .cucumber_res 
+      %p.section_title Cucumber Test Results
+      =draw_chart :array => req[:cucumber]
+  
+    .rspec_res
+      %p.section_title Rspec Test Results
+      =draw_chart(:array => req[:rspec], :rspec => true)
+  

@@ -30,7 +30,8 @@ module GithubIntegration
     
     def store_new_pull_requests(pull_requests)
       pull_requests.each do |req|
-        if (@redis.sadd "pull_requests", JSON.generate(req))
+        if (@redis.sadd "labels", req["head"]["label"])
+          @redis.sadd "pull_requests", JSON.generate(req)
           @redis.lpush "test_queue", JSON.generate(req)
         end
       end
@@ -58,17 +59,17 @@ module GithubIntegration
       end
      return saved_result
     end
-    protected :parse_rspec_result
+    # protected :parse_rspec_result
     
     def parse_cucumber_result(result)
-      res = result.match(/([0-9]+) scenarios \(.*,? ([0-9]+) passed\)/).captures
+      res = result.match(/([0-9]+) scenarios \(.*,? ([0-9]+) passed\)/)
       if res
-        return res
+        return res.captures
       else
         return result.match(/([0-9]+) scenarios \(([0-9]+) passed\)/).captures
       end
     end
-    protected :parse_cucumber_result
+    # protected :parse_cucumber_result
     
     def checkout_pull_request(args)
       FileUtils.cd(FILEPATH)
