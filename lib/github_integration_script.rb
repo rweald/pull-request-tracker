@@ -14,7 +14,7 @@ module GithubIntegration
     attr_accessor :redis
     attr_accessor :user
     attr_accessor :repository
-    attr_reader :filepath
+    attr_accessor :filepath
     def initialize(args)
       @user = args[:user]
       @repository = args[:repository]
@@ -87,7 +87,7 @@ module GithubIntegration
   
   class Runner
     def self.start(filepath)
-      g = GithubIntegration::APIRequest.new :user => "icl", :repository => "cove",:filepath => ARGV[0] 
+      g = GithubIntegration::APIRequest.new :user => "icl", :repository => "cove", :filepath => filepath
 
       # get the requests 
       g.store_new_pull_requests(g.get_pull_requests)
