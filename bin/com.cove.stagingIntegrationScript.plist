@@ -7,7 +7,7 @@
 
         <key>ProgramArguments</key>
         <array>
-                <string>ruby /Users/Ryan/Computer Programs/cogs120/pull-tracker/bin/track_pull_requests.rb</string>
+                <string>ruby /Users/Ryan/Computer\ Programs/cogs120/pull-tracker/bin/track_pull_requests.rb</string>
         </array>
 
         <key>OnDemand</key>

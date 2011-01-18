@@ -2,8 +2,8 @@
 require "rubygems"
 require "redis"
 require "JSON"
-require "github_integration_script.rb"
 $LOAD_PATH.push("/Users/Ryan/Computer Programs/cogs120/pull-tracker/lib")
+require "github_integration_script.rb"
 
 include GithubIntegration
 
