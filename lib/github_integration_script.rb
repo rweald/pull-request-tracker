@@ -8,7 +8,7 @@ require "fileutils"
 
 module GithubIntegration
   GITHUB = "http://github.com/api/v2/json/pulls"
-  FILEPATH = File.expand_path("~/Computer Programs/cogs120/snack-picker-test")
+  FILEPATH = File.expand_path("~/Computer Programs/cogs120/cove-test")
   
   class APIRequest
     attr_accessor :redis
@@ -30,30 +30,39 @@ module GithubIntegration
     
     def store_new_pull_requests(pull_requests)
       pull_requests.each do |req|
-        if (@redis.sadd "pull_requests", req)
-          @redis.lpush "test_queue", req
+        if (@redis.sadd "pull_requests", JSON.generate(req))
+          @redis.lpush "test_queue", JSON.generate(req)
         end
       end
     end
     
-    def run_test_suite
+    def run_test_suite(title)
       FileUtils.cd(FILEPATH)
+      `bundle install`
+      `rake db:migrate`
       result = `rspec --format d spec/`
+      parsed_result = self.parse_rspec_result result
+      @redis.set "#{title}" , "#{JSON.generate(parsed_result)}"
+    end
+    
+    def parse_rspec_result(result)
       saved_result = []
       result = result.split("seconds")[1]
       result = result.split(",")
       result.each do |entry|
         saved_result << entry.strip.split(" ")[0]
       end
-      @redis.lpush "results" , "#{result = result.split(",")}"
+     return saved_result
     end
+    protected :parse_rspec_result
     
-    
-    def checkout_pull_request(args={})
+    def checkout_pull_request(args)
       FileUtils.cd(FILEPATH)
-      cmd_string = "git checkout -b #{args[:branch_name]}:#{args[:user_name]} master"
+      uname = args[:user_name]
+      bname = args[:branch_name]
+      cmd_string = "git checkout -b #{uname}-#{bname} master"
       system(cmd_string)
-      cmd_string = "git pull #{args[:url]} #{args[:branch_name]}"
+      cmd_string = "git pull git://github.com/#{uname}/#{@repository}.git #{args[:branch_name]}"
       system(cmd_string)
     end
   end
