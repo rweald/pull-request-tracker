@@ -14,9 +14,11 @@ module GithubIntegration
     attr_accessor :redis
     attr_accessor :user
     attr_accessor :repository
+    attr_reader :filepath
     def initialize(args)
       @user = args[:user]
       @repository = args[:repository]
+      @filepath = args[:filepath]
       @redis = Redis.new
     end
     
@@ -38,7 +40,7 @@ module GithubIntegration
     end
     
     def run_test_suite(title)
-      FileUtils.cd(FILEPATH)
+      FileUtils.cd(@filepath)
       `bundle install`
       `rake db:migrate`
       result = `rspec --format d spec/`
@@ -73,7 +75,7 @@ module GithubIntegration
     # protected :parse_cucumber_result
     
     def checkout_pull_request(args)
-      FileUtils.cd(FILEPATH)
+      FileUtils.cd(@filepath)
       uname = args[:user_name]
       bname = args[:branch_name]
       cmd_string = "git checkout -b #{uname}-#{bname} master"
