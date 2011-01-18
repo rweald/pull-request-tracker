@@ -30,7 +30,8 @@ module GithubIntegration
     
     def store_new_pull_requests(pull_requests)
       pull_requests.each do |req|
-        if (@redis.sadd "pull_requests", JSON.generate(req))
+        if (@redis.sadd "labels", req["head"]["label"])
+          @redis.sadd "pull_requests", JSON.generate(req)
           @redis.lpush "test_queue", JSON.generate(req)
         end
       end
