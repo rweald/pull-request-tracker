@@ -62,9 +62,12 @@ module GithubIntegration
     
     def parse_cucumber_result(result)
       saved_result = []
-      res = result.match(/^[0-9]+ scenarios .*$/).to_s
-      res.match(/([0-9]+) failed, ([0-9]+) passed/)
-      
+      res = result.match(/([0-9]+) scenarios \(.*,? ([0-9]+) passed\)/).captures
+      if res
+        return res
+      else
+        return result.match(/([0-9]+) scenarios \(([0-9]+) passed\)/).captures
+      end
     end
     protected :parse_cucumber_result
     
