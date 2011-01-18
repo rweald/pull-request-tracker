@@ -42,7 +42,11 @@ module GithubIntegration
       `rake db:migrate`
       result = `rspec --format d spec/`
       parsed_result = self.parse_rspec_result result
-      @redis.set "#{title}" , "#{JSON.generate(parsed_result)}"
+      @redis.set "#{title}-rspec" , "#{JSON.generate(parsed_result)}"
+      
+      result = `rake cucumber`
+      parsed_result = self.parse_cucumber_result result
+      @redis.set "#{title}-cucumber" , "#{JSON.generate(parsed_result)}"
     end
     
     def parse_rspec_result(result)
@@ -55,6 +59,14 @@ module GithubIntegration
      return saved_result
     end
     protected :parse_rspec_result
+    
+    def parse_cucumber_result(result)
+      saved_result = []
+      res = result.match(/^[0-9]+ scenarios .*$/).to_s
+      res.match(/([0-9]+) failed, ([0-9]+) passed/)
+      
+    end
+    protected :parse_cucumber_result
     
     def checkout_pull_request(args)
       FileUtils.cd(FILEPATH)
