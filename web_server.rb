@@ -22,6 +22,10 @@ get "/" do
   haml :index
 end
 
+get '/stylesheet.css' do
+  scss :stylesheet
+end
+
 helpers do
   def draw_chart(args)
     array = args[:array]  

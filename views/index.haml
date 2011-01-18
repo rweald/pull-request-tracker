@@ -1,15 +1,23 @@
-%div.header
-  Welcome to the Cove Integration Analysis
-  %p 
--@pull_requests.each do |req|
-  .result_container
-    .pull_title
-      =req[:label]
-    .cucumber_res 
-      %p.section_title Cucumber Test Results
-      =draw_chart :array => req[:cucumber]
+!!!
+%html{:lang => "ru-RU"}
+  %head
+    %meta{:charset => "UTF-8"}/
+    %title Pull Request Integration
+    %link{:href => "/css/stylesheet.css", :rel=>"stylesheet", :type=>"text/css"}
+  %body
+    .header
+      Welcome to the Cove Integration Analysis
+      %p 
+    .content
+      -@pull_requests.each do |req|
+        .result_container
+          .pull_title
+            =req[:label]
+          .cucumber_res 
+            %p.section_title Cucumber Test Results
+            =draw_chart :array => req[:cucumber]
   
-    .rspec_res
-      %p.section_title Rspec Test Results
-      =draw_chart(:array => req[:rspec], :rspec => true)
+          .rspec_res
+            %p.section_title Rspec Test Results
+            =draw_chart(:array => req[:rspec], :rspec => true)
   
