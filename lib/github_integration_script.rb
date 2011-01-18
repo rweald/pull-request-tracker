@@ -8,7 +8,7 @@ require "fileutils"
 
 module GithubIntegration
   GITHUB = "http://github.com/api/v2/json/pulls"
-  FILEPATH = File.expand_path("~/Computer Programs/cogs120/cove-test")
+  # FILEPATH = File.expand_path("~/Computer Programs/cogs120/cove-test")
   
   class APIRequest
     attr_accessor :redis
@@ -82,6 +82,23 @@ module GithubIntegration
       system(cmd_string)
       cmd_string = "git pull git://github.com/#{uname}/#{@repository}.git #{args[:branch_name]}"
       system(cmd_string)
+    end
+  end
+  
+  class Runner
+    def self.start(filepath)
+      g = GithubIntegration::APIRequest.new :user => "icl", :repository => "cove",:filepath => ARGV[0] 
+
+      # get the requests 
+      g.store_new_pull_requests(g.get_pull_requests)
+
+      while (g.redis.llen("test_queue") > 0)
+        req = JSON.parse(g.redis.lpop("test_queue"))
+        req = req["head"]
+        g.checkout_pull_request :branch_name => req["ref"], :user_name => req["repository"]["owner"], :url => req["repository"]["url"]
+        g.run_test_suite req["label"]
+      end
+      puts "This is proof that I have been run"
     end
   end
 end
