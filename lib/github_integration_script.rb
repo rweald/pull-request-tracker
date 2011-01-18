@@ -61,7 +61,6 @@ module GithubIntegration
     protected :parse_rspec_result
     
     def parse_cucumber_result(result)
-      saved_result = []
       res = result.match(/([0-9]+) scenarios \(.*,? ([0-9]+) passed\)/).captures
       if res
         return res
