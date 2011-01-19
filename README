@@ -1,0 +1,3 @@
+Cool Little Application that grabs all the pending pull request, pull them 
+into a local branch and runs cucumber and rspec test suite. Results 
+are then parsed and displayed using simple sinatra script.
